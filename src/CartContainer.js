@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
 class CartContainer extends React.Component{
 
@@ -44,4 +45,10 @@ class CartContainer extends React.Component{
     }
 }
 
-export default CartContainer
+const mapStateToProps = (state) => {
+    return {cart: state.cart}
+}
+
+
+export default connect(mapStateToProps)(CartContainer)
+// export default CartContainer

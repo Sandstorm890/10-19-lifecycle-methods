@@ -3,13 +3,12 @@ import Header from './Header'
 import ItemsContainer from './ItemsContainer'
 import CartContainer from './CartContainer'
 import './App.css';
+import { connect } from 'react-redux';
 
 class App extends React.Component{
 
   state = {
     page: "items",
-    items: [],
-    cart: [],
     term: ""
   }
 
@@ -21,24 +20,24 @@ class App extends React.Component{
     })
   }
 
-  addToCart = (id) => {
-    // find the Item with that id 
-    const foundItem = this.state.items.find(item => item.id === id)
-    // update state to show that the item is in the cart
-    this.setState((prevState) => ({
-      cart: [...prevState.cart, foundItem]
-    }), () => console.log(this.state) )
-  }
+  // addToCart = (id) => {
+  //   // find the Item with that id 
+  //   const foundItem = this.props.items.find(item => item.id === id)
+  //   // update state to show that the item is in the cart
+  //   this.props.dispatch({payload: foundItem, type: "ADD_ITEM"})
+  // }
 
   // LCM can ONLY be used in a class component 
   componentDidMount(){
     // typcially fetch requests happen in a componentDidMount
-    console.log("app mounted")
+    console.log(this.props)
 
     fetch("http://localhost:3000/items")
     .then(res => res.json())
     .then(json => {
-      this.setState({items: json})
+      // this.setState({items: json})
+      this.props.dispatch({payload: json, type: "GOT_ITEMS"})
+
     })
   }
 
@@ -48,11 +47,15 @@ class App extends React.Component{
     return (
       <div className="App">
         <Header changePage={this.changePage} />
-        {this.state.page === "items" ? <ItemsContainer  addToCart={this.addToCart} items={this.state.items} cart={this.state.cart}/> : <CartContainer cart={this.state.cart}/>}
+        {this.state.page === "items" ? <ItemsContainer items={this.props.items} cart={this.props.cart}/> : <CartContainer />}
       </div>
     );
   }
 }
 
+const mapStateToProps = (state) => {
+  return {items: state.items, cart: state.cart}
+}
 
-export default App;
+export default connect(mapStateToProps)(App)
+// export default App;

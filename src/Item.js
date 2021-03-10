@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 class Item extends React.Component {
 
@@ -45,10 +46,16 @@ class Item extends React.Component {
                 <br/>
                 Price: {this.props.price}
                 <br/>
-                {!this.isInCart() && <button onClick={(e) => this.props.addToCart(this.props.id)}>Add To Cart</button>}
+                {!this.isInCart() && <button onClick={(e) => this.props.addToCart(this.props.item)}>Add To Cart</button>}
             </div>
         )
     }
 }
 
-export default Item
+
+const mapDispatchToProps = (dispatch) => {
+    return {addToCart: (item) => {dispatch({payload: item, type: "ADD_ITEM"})}}
+}
+
+export default connect(null, mapDispatchToProps)(Item)
+// export default Item
